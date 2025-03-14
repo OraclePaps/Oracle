@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from foresite.replit.app/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 13 Mar 2025 17:15:15 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Oráculo</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;family=Poppins:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="../cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #837DFF;
+            --primary-dark: #5149FF;
+            --secondary: #FF6C63;
+            --accent: #63FFD1;
+            --background: #f8f9fe;
+            --foreground: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-tertiary: #999999;
+            --success: #48D0B0;
+            --warning: #FFD166;
+            --error: #FF6B6B;
+            --gray-100: #f0f1f8;
+            --gray-200: #e1e2f0;
+            --gray-300: #d2d3e0;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary: #7E77FF;
+            --primary-light: #9E99FF;
+            --primary-dark: #5E55FF;
+            --secondary: #FF7E77;
+            --accent: #77FFE1;
+            --background: #1a1a2e;
+            --foreground: #2a2a40;
+            --text-primary: #ffffff;
+            --text-secondary: #ccccdd;
+            --text-tertiary: #a0a0b0;
+            --gray-100: #2d2d3e;
+            --gray-200: #333346;
+            --gray-300: #40404f;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--background), var(--gray-100));
+            color: var(--text-primary);
+            transition: var(--transition);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; font-weight: 600; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo i { font-size: 24px; color: var(--primary); }
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .controls { display: flex; gap: 15px; align-items: center; }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 20px;
+            padding: 8px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        .theme-toggle:hover { background-color: var(--gray-100); }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.2);
+        }
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #FF5246;
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #3BC0A0;
+            transform: translateY(-2px);
+        }
+        .btn-warning {
+            background-color: var(--warning);
+            color: var(--text-primary);
+        }
+        .btn-warning:hover {
+            background-color: #FFB825;
+            transform: translateY(-2px);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .app-wrapper { display: grid; grid-template-columns: 1fr 1.5fr; gap: 30px; }
+
+        .card {
+            background-color: var(--foreground);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            transition: var(--transition);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .card h2 { font-size: 20px; }
+        .card-header .badge {
+            background-color: var(--primary-light);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .canvas-container {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid var(--gray-200);
+        }
+        #sketchPad {
+            background-color: white;
+            width: 100%;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        .timer {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .drawing-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .color-picker {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .color-option {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid var(--gray-200);
+            transition: var(--transition);
+        }
+        .color-option.active {
+            transform: scale(1.2);
+            border-color: var(--text-primary);
+        }
+        .texture-picker {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .texture-option {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: var(--transition);
+        }
+        .texture-option.active {
+            border-color: var(--primary);
+            transform: scale(1.1);
+        }
+        .drawing-settings {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        .brush-size {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        .drawing-actions { display: flex; gap: 10px; }
+
+        .target-number {
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary);
+            background-color: var(--gray-100);
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+        }
+
+        #targetNumberDisplay {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 18px;
+            color: var(--text-primary);
+            font-weight: bold;
+        }
+
+        #fullscreenOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #fullscreenOverlay > div {
+            text-align: center;
+        }
+        #fullscreenImage {
+            max-width: 80%;
+            max-height: 60%;
+            border-radius: var(--border-radius);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: expand 0.5s ease-in-out;
+        }
+        @keyframes expand {
+            from { transform: scale(0.5); }
+            to { transform: scale(1); }
+        }
+        #fullscreenNumber {
+            color: white;
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        .timer-toggle { display: flex; align-items: center; gap: 8px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-300);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .images-container {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .image-card {
+            position: relative;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+        .image-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            transition: var(--transition);
+        }
+        .image-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--foreground);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-primary);
+            font-size: 2em;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .image-card.selected {
+            border: 3px solid var(--primary);
+            transform: scale(1.05);
+        }
+        .selected .image-mask { background-color: rgba(108, 99, 255, 0.3); }
+
+        .feedback {
+            background-color: var(--gray-100);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            text-align: center;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(10px);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .feedback.show { opacity: 1; transform: translateY(0); }
+        .feedback.success {
+            background-color: rgba(72, 208, 176, 0.2);
+            color: var(--success);
+        }
+        .feedback.error {
+            background-color: rgba(255, 107, 107, 0.2);
+            color: var(--error);
+        }
+        .feedback i { margin-right: 8px; font-size: 18px; }
+
+        .game-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .game-buttons .btn { padding: 12px; }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background-color: var(--gray-100);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            text-align: center;
+            transition: var(--transition);
+        }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: var(--box-shadow); }
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .charts-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .chart-wrapper { height: 250px; position: relative; }
+
+        .difficulty-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .difficulty-option {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: var(--border-radius);
+            background-color: var(--gray-100);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        .difficulty-option:hover { background-color: var(--gray-200); }
+        .difficulty-option.active { background-color: var(--primary); color: white; }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        .modal.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            background-color: var(--foreground);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+        .modal.active .modal-content { transform: translateY(0); }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-tertiary);
+        }
+        .modal-close:hover { color: var(--error); }
+        .modal h2 { margin-bottom: 20px; text-align: center; font-size: 24px; }
+        .modal p { margin-bottom: 15px; color: var(--text-secondary); line-height: 1.6; }
+
+        .session-history { margin-top: 20px; }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .history-table th, .history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .history-table th { font-weight: 600; color: var(--text-secondary); }
+        .history-table tr:hover { background-color: var(--gray-100); }
+
+        .session-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .session-info .badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .progress-container {
+            height: 5px;
+            width: 100%;
+            background-color: var(--gray-200);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary);
+            transition: width 1s linear;
+        }
+
+        .notes-container { margin-top: 20px; }
+        .notes-input {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--border-radius);
+            background-color: var(--foreground);
+            color: var(--text-primary);
+            resize: vertical;
+            transition: var(--transition);
+        }
+        .notes-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+        }
+
+        @media (max-width: 1024px) {
+            .app-wrapper { grid-template-columns: 1fr; }
+            .stats-cards, .game-buttons { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .controls { width: 100%; justify-content: space-between; }
+            .stats-cards { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .game-buttons { grid-template-columns: 1fr; }
+            .images-container { grid-template-columns: 1fr; }
+            .drawing-settings { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <h1>Projeto Oráculo</h1>
+            </div>
+            <div class="controls">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <button class="btn btn-outline" id="howToPlayBtn"><i class="fas fa-question-circle"></i> Como usar</button>
+                <button class="btn btn-primary" id="sessionBtn"><i class="fas fa-history"></i> Informação da sessão</button>
+            </div>
+        </div>
+
+        <div class="difficulty-selector">
+            <div class="difficulty-option" data-difficulty="1"><i class="fas fa-lightbulb"></i> Unitário</div>
+            <div class="difficulty-option active" data-difficulty="4"><i class="fas fa-seedling"></i> Iniciante (4)</div>
+            <div class="difficulty-option" data-difficulty="6"><i class="fas fa-leaf"></i> Intermediário (6)</div>
+            <div class="difficulty-option" data-difficulty="9"><i class="fas fa-tree"></i> Avançado (9)</div>
+        </div>
+
+        <div class="app-wrapper">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Desenhe suas impressões</h2>
+                    <div class="timer-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="timerToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Timer</span>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="timerProgress"></div>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="sketchPad" height="350"></canvas>
+                    <div class="timer" id="timer">
+                        <i class="fas fa-clock"></i>
+                        <span id="timerValue">60</span>s
+                    </div>
+                </div>
+                <div id="targetNumberDisplay"></div> <!-- Display target number here -->
+                <div class="drawing-controls">
+                    <div class="color-picker" id="colorPicker">
+                        <div class="color-option" style="background-color: #000000;" data-color="#000000"></div>
+                        <div class="color-option" style="background-color: #ff0000;" data-color="#ff0000"></div>
+                        <div class="color-option" style="background-color: #0000ff;" data-color="#0000ff"></div>
+                        <div class="color-option" style="background-color: #00aa00;" data-color="#00aa00"></div>
+                        <div class="color-option" style="background-color: #ffaa00;" data-color="#ffaa00"></div>
+                        <div class="color-option" style="background-color: #800080;" data-color="#800080"></div>
+                        <div class="color-option" style="background-color: #ff69b4;" data-color="#ff69b4"></div>
+                        <div class="color-option" style="background-color: #00ffff;" data-color="#00ffff"></div>
+                        <div class="color-option" style="background-color: #ffffff;" data-color="#ffffff"></div>
+                        <div class="color-option" style="background-color: #808080;" data-color="#808080"></div>
+                        <div class="color-option" style="background-color: #a52a2a;" data-color="#a52a2a"></div>
+                        <div class="color-option" style="background-color: #ffd700;" data-color="#ffd700"></div>
+                    </div>
+                    <div class="texture-picker" id="texturePicker">
+                        <div class="texture-option active" data-texture="normal"><i class="fas fa-paint-brush"></i></div>
+                        <div class="texture-option" data-texture="chalk"><i class="fas fa-pastafarianism"></i></div>
+                        <div class="texture-option" data-texture="fur"><i class="fas fa-cloud"></i></div>
+                        <div class="texture-option" data-texture="sketch"><i class="fas fa-pencil-alt"></i></div>
+                        <div class="texture-option" data-texture="dots"><i class="fas fa-dot-circle"></i></div>
+                        <div class="texture-option" data-texture="splatter"><i class="fas fa-vial"></i></div>
+                    </div>
+                    <div class="drawing-settings">
+                        <div class="brush-size">
+                            <label for="brushSize">Tamanho do Brush :</label>
+                            <input type="range" id="brushSize" min="1" max="20" value="4">
+                        </div>
+                        <div class="drawing-actions">
+                            <button class="btn btn-sm btn-warning" id="undoBtn"><i class="fas fa-undo"></i> Desfazer</button>
+                            <button class="btn btn-sm btn-secondary" id="clearBtn"><i class="fas fa-trash"></i> Limpar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="notes-container">
+                    <textarea class="notes-input" id="impressionNotes" placeholder="Escreva suas impressões aqui..."></textarea>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>Escolha a imagem alvo</h2>
+                    <span class="badge" id="difficultyLabel">Modo Iniciante</span>
+                </div>
+                <div class="images-container" id="imagesContainer"></div>
+                <div class="feedback" id="feedback"></div>
+                <div class="game-buttons">
+                    <button class="btn btn-primary" id="revealBtn"><i class="fas fa-eye"></i> Revelar as imagens</button>
+                    <button class="btn btn-success" id="newGameBtn"><i class="fas fa-redo"></i> Nova sessão</button>
+                </div>
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <h3>Pontuação</h3>
+                        <div class="value" id="score">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total de Sessões</h3>
+                        <div class="value" id="totalGames">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Combo Atual</h3>
+                        <div class="value" id="currentStreak">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Taxa de Sucesso</h3>
+                        <div class="value" id="successRate">0%</div>
+                    </div>
+                </div>
+                <div class="charts-container">
+                    <div class="chart-wrapper">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="fullscreenOverlay">
+            <div>
+                <img id="fullscreenImage" src="#" alt="Correct Image">
+                <div id="fullscreenNumber"></div>
+            </div>
+        </div>
+
+        <div class="modal" id="howToPlayModal">
+            <div class="modal-content">
+                <button class="modal-close" id="closeHowToPlayModal"><i class="fas fa-times"></i></button>
+                <h2>Como usar</h2>
+                <p>1. Uma imagem-alvo e um número único de 8 dígitos (XXXX-XXXX) são selecionados aleatoriamente.</p>
+                <p>2. Esboce o que você sente sobre a imagem-alvo usando as ferramentas de desenho.</p>
+                <p>3. Clique em 'Revelar Imagens' e selecione a imagem que você acha que é a alvo.</p>
+                <p>4. If correct, see the target number. If not, try again!</p>
+                <p>5. Track your success rate to test your ESP skills.</p>
+            </div>
+        </div>
+
+        <div class="modal" id="sessionModal">
+            <div class="modal-content">
+                <button class="modal-close" id="closeSessionModal"><i class="fas fa-times"></i></button>
+                <h2>Session Data</h2>
+                <div class="session-info">
+                    <span>Session ID: <span id="sessionId"></span></span>
+                    <span class="badge" id="sessionDifficulty">Beginner</span>
+                </div>
+                <div class="session-history">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Game</th>
+                                <th>Result</th>
+                                <th>Target</th>
+                                <th>Selected</th>
+                                <th>Time</th>
+                                <th>Target #</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="session-controls">
+                    <div>
+                        <span class="value" id="pValue">N/A</span>
+                        <span style="font-size: 12px; color: var(--text-tertiary);"> p-value</span>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-primary" id="exportDataBtn"><i class="fas fa-download"></i> Export</button>
+                        <button class="btn btn-sm btn-secondary" id="resetSessionBtn"><i class="fas fa-trash"></i> Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state variables
+        let currentGameImages = [];
+        let targetImageIndex = -1;
+        let revealedImages = false;
+        let selectedImageIndex = -1;
+        let score = 0;
+        let totalGames = 0;
+        let currentStreak = 0;
+        let gameHistory = [];
+        let difficultyLevel = 4;
+        let timerInterval = null;
+        let timeRemaining = 60;
+        let timerEnabled = true;
+        let targetNumber = "";
+        let drawingHistory = [];
+        let currentDrawingStep = -1;
+        let currentTexture = "normal";
+        let brushColor = "#000000";
+        let brushSize = 4;
+        let isDrawing = false;
+        let lastX = 0, lastY = 0;
+        let selectionLocked = false;
+        let currentNotes = "";
+        let currentDrawing = null;
+
+        const sessionId = 'rv-' + Math.random().toString(36).substring(2, 10);
+        const canvas = document.getElementById('sketchPad');
+        const ctx = canvas.getContext('2d');
+        let performanceChart = null;
+
+        function generateNumber() {
+            const part1 = Math.floor(1000 + Math.random() * 9000);
+            const part2 = Math.floor(1000 + Math.random() * 9000);
+            return `${part1}-${part2}`;
+        }
+
+        function init() {
+            document.getElementById('sessionId').textContent = sessionId;
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            setupCanvas();
+            setupButtons();
+            setupThemeToggle();
+            setupDifficultySelector();
+            initializeChart();
+            loadGameState();
+            startNewGame();
+        }
+
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetWidth * 0.75;
+            if (drawingHistory.length > 0) {
+                const img = new Image();
+                img.onload = () => ctx.drawImage(img, 0, 0);
+                img.src = drawingHistory[currentDrawingStep];
+            }
+        }
+
+        function setupCanvas() {
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            canvas.addEventListener('touchstart', handleTouch);
+            canvas.addEventListener('touchmove', handleTouch);
+            canvas.addEventListener('touchend', stopDrawing);
+
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.lineWidth = brushSize;
+            ctx.strokeStyle = brushColor;
+
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.color-option').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+                    brushColor = this.getAttribute('data-color');
+                    ctx.strokeStyle = brushColor;
+                });
+            });
+
+            document.querySelectorAll('.texture-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.texture-option').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+                    currentTexture = this.getAttribute('data-texture');
+                });
+            });
+
+            document.getElementById('brushSize').addEventListener('input', function() {
+                brushSize = this.value;
+                ctx.lineWidth = brushSize;
+            });
+
+            document.getElementById('undoBtn').addEventListener('click', undoDrawing);
+            document.getElementById('clearBtn').addEventListener('click', clearCanvas);
+            saveDrawingState();
+            document.querySelector('.color-option').classList.add('active');
+        }
+
+        function handleTouch(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent(
+                e.type === 'touchstart' ? 'mousedown' : 'mousemove',
+                { clientX: touch.clientX, clientY: touch.clientY }
+            );
+            canvas.dispatchEvent(mouseEvent);
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            lastX = e.clientX - rect.left;
+            lastY = e.clientY - rect.top;
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const currentX = e.clientX - rect.left;
+            const currentY = e.clientY - rect.top;
+
+            switch (currentTexture) {
+                case "normal":
+                    ctx.beginPath();
+                    ctx.moveTo(lastX, lastY);
+                    ctx.lineTo(currentX, currentY);
+                    ctx.stroke();
+                    break;
+                case "chalk":
+                    const dx = currentX - lastX;
+                    const dy = currentY - lastY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const steps = Math.max(Math.floor(dist / 2), 1);
+                    for (let i = 0; i < steps; i++) {
+                        const tx = lastX + (dx / steps) * i + (Math.random() * 4 - 2);
+                        const ty = lastY + (dy / steps) * i + (Math.random() * 4 - 2);
+                        ctx.beginPath();
+                        ctx.arc(tx, ty, brushSize / 2 * Math.random(), 0, Math.PI * 2);
+                        ctx.fillStyle = brushColor;
+                        ctx.fill();
+                    }
+                    break;
+                case "fur":
+                    ctx.beginPath();
+                    ctx.moveTo(lastX, lastY);
+                    ctx.lineTo(currentX, currentY);
+                    ctx.stroke();
+                    const angle = Math.atan2(currentY - lastY, currentX - lastX);
+                    for (let i = 0; i < 10; i++) {
+                        const xc = lastX + (currentX - lastX) * i / 10;
+                        const yc = lastY + (currentY - lastY) * i / 10;
+                        const xOffset = 2 * Math.sin(angle + Math.PI / 2);
+                        const yOffset = 2 * Math.cos(angle + Math.PI / 2);
+                        ctx.beginPath();
+                        ctx.moveTo(xc, yc);
+                        ctx.lineTo(xc + Math.random() * xOffset, yc + Math.random() * yOffset);
+                        ctx.stroke();
+                    }
+                    break;
+                case "sketch":
+                    const originalAlpha = ctx.globalAlpha;
+                    for (let i = 0; i < 3; i++) {
+                        ctx.globalAlpha = 0.3;
+                        ctx.beginPath();
+                        ctx.moveTo(lastX + i * 0.5, lastY + i * 0.5);
+                        ctx.lineTo(currentX + i * 0.5, currentY + i * 0.5);
+                        ctx.stroke();
+                    }
+                    ctx.globalAlpha = originalAlpha;
+                    break;
+                case "dots":
+                    const distance = Math.sqrt((currentX - lastX) ** 2 + (currentY - lastY) ** 2);
+                    const dots = Math.ceil(distance / 2);
+                    for (let i = 0; i <= dots; i++) {
+                        const factor = i / dots;
+                        const dotX = lastX + (currentX - lastX) * factor;
+                        const dotY = lastY + (currentY - lastY) * factor;
+                        ctx.beginPath();
+                        ctx.arc(dotX, dotY, brushSize / 2, 0, Math.PI * 2);
+                        ctx.fillStyle = brushColor;
+                        ctx.fill();
+                    }
+                    break;
+                case "splatter":
+                    ctx.beginPath();
+                    ctx.moveTo(lastX, lastY);
+                    ctx.lineTo(currentX, currentY);
+                    ctx.stroke();
+                    for (let i = 0; i < Math.floor(brushSize / 2); i++) {
+                        const offsetX = (Math.random() - 0.5) * brushSize * 2;
+                        const offsetY = (Math.random() - 0.5) * brushSize * 2;
+                        ctx.beginPath();
+                        ctx.arc(currentX + offsetX, currentY + offsetY, Math.random() * brushSize * 0.5, 0, Math.PI * 2);
+                        ctx.fillStyle = brushColor;
+                        ctx.fill();
+                    }
+                    break;
+            }
+            lastX = currentX;
+            lastY = currentY;
+        }
+
+        function stopDrawing() {
+            if (isDrawing) {
+                isDrawing = false;
+                saveDrawingState();
+            }
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawingHistory = [];
+            currentDrawingStep = -1;
+            saveDrawingState();
+        }
+
+        function saveDrawingState() {
+            currentDrawingStep++;
+            if (currentDrawingStep < drawingHistory.length) {
+                drawingHistory = drawingHistory.slice(0, currentDrawingStep);
+            }
+            drawingHistory.push(canvas.toDataURL());
+        }
+
+        function undoDrawing() {
+            if (currentDrawingStep > 0) {
+                currentDrawingStep--;
+                const img = new Image();
+                img.onload = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = drawingHistory[currentDrawingStep];
+            } else if (currentDrawingStep === 0) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                currentDrawingStep = -1;
+            }
+        }
+
+        function setupButtons() {
+            document.getElementById('revealBtn').addEventListener('click', revealImages);
+            document.getElementById('newGameBtn').addEventListener('click', startNewGame);
+            document.getElementById('howToPlayBtn').addEventListener('click', () => document.getElementById('howToPlayModal').classList.add('active'));
+            document.getElementById('sessionBtn').addEventListener('click', () => {
+                populateHistoryTable();
+                document.getElementById('sessionModal').classList.add('active');
+            });
+            document.getElementById('closeHowToPlayModal').addEventListener('click', () => document.getElementById('howToPlayModal').classList.remove('active'));
+            document.getElementById('closeSessionModal').addEventListener('click', () => document.getElementById('sessionModal').classList.remove('active'));
+            document.getElementById('exportDataBtn').addEventListener('click', exportSessionData);
+            document.getElementById('resetSessionBtn').addEventListener('click', () => {
+                if (confirm('Reset session? All data will be lost.')) resetSession();
+            });
+            document.getElementById('impressionNotes').addEventListener('input', () => currentNotes = document.getElementById('impressionNotes').value);
+            document.getElementById('timerToggle').addEventListener('change', toggleTimer);
+        }
+
+        function setupThemeToggle() {
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                document.body.classList.toggle('dark-theme');
+                document.getElementById('themeToggle').innerHTML = document.body.classList.contains('dark-theme') ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+                saveGameState();
+            });
+        }
+
+        function setupDifficultySelector() {
+            document.querySelectorAll('.difficulty-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.difficulty-option').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+                    difficultyLevel = parseInt(this.getAttribute('data-difficulty'));
+                    updateDifficultyLabel();
+                    startNewGame();
+                });
+            });
+        }
+
+        function updateDifficultyLabel() {
+            const labels = { 1: 'Single Image', 4: 'Beginner', 6: 'Intermediate', 9: 'Advanced' };
+            document.getElementById('difficultyLabel').textContent = `${labels[difficultyLevel]} Mode`;
+            document.getElementById('sessionDifficulty').textContent = labels[difficultyLevel];
+        }
+
+        function startTimer() {
+            if (!timerEnabled) return;
+            timeRemaining = 60;
+            updateTimerDisplay();
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    revealImages();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            document.getElementById('timerValue').textContent = timeRemaining;
+            const progress = (timeRemaining / 60) * 100;
+            document.getElementById('timerProgress').style.width = `${progress}%`;
+            document.getElementById('timerProgress').style.backgroundColor = timeRemaining <= 10 ? 'var(--error)' : timeRemaining <= 30 ? 'var(--warning)' : 'var(--primary)';
+        }
+
+        function toggleTimer() {
+            timerEnabled = document.getElementById('timerToggle').checked;
+            document.getElementById('timer').style.display = timerEnabled ? 'flex' : 'none';
+            document.getElementById('timerProgress').parentElement.style.display = timerEnabled ? 'block' : 'none';
+            if (!timerEnabled) clearInterval(timerInterval);
+            else if (!revealedImages) startTimer();
+            saveGameState();
+        }
+
+        function startNewGame() {
+            clearCanvas();
+            revealedImages = false;
+            selectedImageIndex = -1;
+            selectionLocked = false;
+            document.getElementById('revealBtn').disabled = false;
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('impressionNotes').value = "";
+            currentNotes = "";
+            targetNumber = generateNumber();
+            document.getElementById('targetNumberDisplay').textContent = `Target Number: ${targetNumber}`;
+            loadRandomImages();
+            if (timerEnabled) startTimer();
+            else {
+                clearInterval(timerInterval);
+                timeRemaining = 60;
+                updateTimerDisplay();
+            }
+            saveGameState();
+        }
+
+        function loadRandomImages() {
+            const container = document.getElementById('imagesContainer');
+            container.innerHTML = '';
+            container.style.gridTemplateColumns = difficultyLevel === 1 ? '1fr' : difficultyLevel <= 4 ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)';
+            currentGameImages = [];
+            targetImageIndex = difficultyLevel === 1 ? 0 : Math.floor(Math.random() * difficultyLevel);
+            for (let i = 0; i < difficultyLevel; i++) {
+                const seed = Date.now() + i;
+                const url = `https://picsum.photos/seed/${seed}/400/300`;
+                currentGameImages.push(url);
+                const card = document.createElement('div');
+                card.className = 'image-card';
+                card.dataset.index = i;
+                card.addEventListener('click', selectImage);
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = `Image ${i+1}`;
+                const mask = document.createElement('div');
+                mask.className = 'image-mask';
+                mask.textContent = i + 1;
+                const numberDisplay = document.createElement('div');
+                numberDisplay.className = 'target-number';
+                numberDisplay.textContent = i === targetImageIndex ? targetNumber : '';
+                numberDisplay.style.display = 'none'; // Initially hidden
+                card.appendChild(img);
+                card.appendChild(mask);
+                card.appendChild(numberDisplay);
+                container.appendChild(card);
+            }
+        }
+
+        function revealImages() {
+            if (revealedImages) return;
+            revealedImages = true;
+            document.getElementById('revealBtn').disabled = true;
+            if (timerInterval) clearInterval(timerInterval);
+            currentDrawing = canvas.toDataURL();
+            document.querySelectorAll('.image-card img').forEach(img => img.style.display = 'block');
+            document.querySelectorAll('.image-mask').forEach(mask => mask.style.backgroundColor = 'rgba(0, 0, 0, 0.3)');
+        }
+
+        function selectImage(e) {
+            if (!revealedImages || selectionLocked) return;
+            const card = e.target.closest('.image-card');
+            if (!card) return;
+            selectionLocked = true;
+            selectedImageIndex = parseInt(card.dataset.index);
+            document.querySelectorAll('.image-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            checkSelection(card);
+            if (selectedImageIndex === targetImageIndex) {
+                const numberDisplay = card.querySelector('.target-number');
+                numberDisplay.style.display = 'block';
+                setTimeout(() => showFullscreenImage(currentGameImages[targetImageIndex], targetNumber), 1000);
+            }
+        }
+
+        function checkSelection(card) {
+            const correct = selectedImageIndex === targetImageIndex;
+            if (correct) {
+                showFeedback('success', '<i class="fas fa-check-circle"></i> Correct!');
+                score++;
+                currentStreak++;
+                card.style.boxShadow = '0 0 10px 5px var(--success)';
+            } else {
+                showFeedback('error', `<i class="fas fa-times-circle"></i> Incorrect. Target was #${targetImageIndex + 1}.`);
+                currentStreak = 0;
+            }
+            totalGames++;
+            gameHistory.push({
+                targetIndex: targetImageIndex,
+                selectedIndex: selectedImageIndex,
+                correct,
+                notes: currentNotes,
+                drawing: currentDrawing,
+                timeElapsed: timerEnabled ? (60 - timeRemaining) : null,
+                targetNumber
+            });
+            updateStats();
+            updateCharts();
+            saveGameState();
+        }
+
+        function showFullscreenImage(imageSrc, number) {
+            const overlay = document.getElementById('fullscreenOverlay');
+            const img = document.getElementById('fullscreenImage');
+            const num = document.getElementById('fullscreenNumber');
+            img.src = imageSrc;
+            num.textContent = number;
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 3000); // Hide after 3 seconds
+        }
+
+        function showFeedback(type, message) {
+            const feedback = document.getElementById('feedback');
+            feedback.innerHTML = message;
+            feedback.className = `feedback ${type} show`;
+        }
+
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('totalGames').textContent = totalGames;
+            document.getElementById('currentStreak').textContent = currentStreak;
+            const successRate = totalGames > 0 ? (score / totalGames) * 100 : 0;
+            document.getElementById('successRate').textContent = `${successRate.toFixed(1)}%`;
+            const pValue = calculatePValue(totalGames, score, 1 / difficultyLevel);
+            document.getElementById('pValue').textContent = pValue < 0.0001 ? '<0.0001' : pValue.toFixed(4);
+        }
+
+        function calculatePValue(n, k, p) {
+            let prob = 0;
+            for (let i = k; i <= n; i++) {
+                prob += binomialPMF(n, i, p);
+            }
+            return prob;
+        }
+
+        function binomialPMF(n, k, p) {
+            return binomialCoefficient(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+        }
+
+        function binomialCoefficient(n, k) {
+            if (k < 0 || k > n) return 0;
+            let coef = 1;
+            for (let i = 0; i < k; i++) coef *= (n - i) / (i + 1);
+            return coef;
+        }
+
+        function initializeChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            performanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Success Rate', data: [], borderColor: 'rgba(108, 99, 255, 1)', fill: true, backgroundColor: 'rgba(108, 99, 255, 0.1)' },
+                        { label: 'Random Chance', data: [], borderColor: 'rgba(150, 150, 150, 0.5)', borderDash: [5, 5], fill: false }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { min: 0, max: 100 } }
+                }
+            });
+        }
+
+        function updateCharts() {
+            const labels = [];
+            const successRates = [];
+            const randomChances = [];
+            const windowSize = 5;
+            for (let i = windowSize; i <= totalGames; i += windowSize) {
+                const windowGames = gameHistory.slice(i - windowSize, i);
+                const windowCorrect = windowGames.filter(g => g.correct).length;
+                labels.push(`Games ${i - windowSize + 1}-${i}`);
+                successRates.push((windowCorrect / windowSize) * 100);
+                randomChances.push((1 / difficultyLevel) * 100);
+            }
+            performanceChart.data.labels = labels.length ? labels : [`Games 1-${totalGames}`];
+            performanceChart.data.datasets[0].data = successRates.length ? successRates : [totalGames > 0 ? (score / totalGames) * 100 : 0];
+            performanceChart.data.datasets[1].data = randomChances.length ? randomChances : [totalGames > 0 ? (1 / difficultyLevel) * 100 : 0];
+            performanceChart.update();
+        }
+
+        function populateHistoryTable() {
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '';
+            gameHistory.forEach((game, i) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${game.correct ? '✓' : '✗'}</td>
+                    <td>${game.targetIndex + 1}</td>
+                    <td>${game.selectedIndex !== -1 ? game.selectedIndex + 1 : 'N/A'}</td>
+                    <td>${game.timeElapsed !== null ? `${game.timeElapsed}s` : 'N/A'}</td>
+                    <td>${game.correct ? game.targetNumber : ''}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function exportSessionData() {
+            const data = {
+                sessionId,
+                score,
+                totalGames,
+                difficultyLevel,
+                gameHistory
+            };
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `session-${sessionId}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function resetSession() {
+            score = 0;
+            totalGames = 0;
+            currentStreak = 0;
+            gameHistory = [];
+            updateStats();
+            updateCharts();
+            populateHistoryTable();
+            startNewGame();
+            document.getElementById('sessionModal').classList.remove('active');
+            saveGameState();
+        }
+
+        function saveGameState() {
+            const state = { score, totalGames, currentStreak, gameHistory, difficultyLevel, timerEnabled };
+            localStorage.setItem(`remoteViewing_${sessionId}`, JSON.stringify(state));
+        }
+
+        function loadGameState() {
+            const state = JSON.parse(localStorage.getItem(`remoteViewing_${sessionId}`));
+            if (state) {
+                score = state.score || 0;
+                totalGames = state.totalGames || 0;
+                currentStreak = state.currentStreak || 0;
+                gameHistory = state.gameHistory || [];
+                difficultyLevel = state.difficultyLevel || 4;
+                timerEnabled = state.timerEnabled !== undefined ? state.timerEnabled : true;
+                document.getElementById('timerToggle').checked = timerEnabled;
+                updateStats();
+                updateCharts();
+                populateHistoryTable();
+                document.querySelector(`.difficulty-option[data-difficulty="${difficultyLevel}"]`).classList.add('active');
+                updateDifficultyLabel();
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+
+<!-- Mirrored from foresite.replit.app/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 13 Mar 2025 17:15:15 GMT -->
+</html>
